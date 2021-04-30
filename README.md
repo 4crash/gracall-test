@@ -1,2 +1,2 @@
 # gracall-test
-Test app from gracall
+Test app to gracall
