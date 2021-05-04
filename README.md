@@ -4,9 +4,22 @@
 ## Notes
 - Theres no Asyncio callings because of no IO operations.
 
-## How to run app:
-- pip install -r requirements.txt
+## Environment
+- python 3.9.x
+- set sys path for python command 
+- pip
+- git CLI
+
+## How to install and run app :
+- all commands are executed from cmd line on win OS
+- create folder where you want to store project files 
+- jump in to the folder
+- download files from git repository git clone https://github.com/4crash/gracall-test
+- create virtual environment python -m venv ./venv
+- activate virtual environment (Windows version) .\venv\Scripts\activate
+- install libraries pip install -r requirements.txt
 - Run app with command:  uvicorn main:app
+- open http://127.0.0.1:8000/docs in browser
 
 ## Structure:
 - main.py with FastAPi REST environment 
