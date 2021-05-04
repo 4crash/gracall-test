@@ -13,8 +13,8 @@
 
 ## How to install and run app :
 - all commands are executed from cmd line on win OS
-- create folder where you want to store project files 
-- jump in to the folder
+- create folder where the project files will be stored 
+- open the folder
 - download files from git repository git clone https://github.com/4crash/gracall-test
 - create virtual environment python -m venv ./venv
 - activate virtual environment (Windows version) .\venv\Scripts\activate
