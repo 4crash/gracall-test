@@ -3,6 +3,7 @@
 
 ## Notes
 - Theres no Asyncio callings because of no IO operations.
+- Iam sorry that there is no Docker file. Iam struggling with bluescreen on my computer when I run Docker Terminal. (Hope I will fix it soon)
 
 ## Environment
 - python 3.9.x
