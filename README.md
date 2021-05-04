@@ -1,7 +1,8 @@
 # gracall-test
-- Test FastAPI app for gracall
+- FastAPI code showcase for gracall
 
-Theres no Asyncio callings because of no IO operations.
+## Notes
+- Theres no Asyncio callings because of no IO operations.
 
 ## How to run app:
 - pip install -r requirements.txt
@@ -14,5 +15,5 @@ Theres no Asyncio callings because of no IO operations.
 - singleton.py for setting class as singleton
 
 ### Tests ./tests
-- test_app.py testing REST api
-- test_post_logic.py testing post_logic.py
+- test_app.py for testing main.py REST api
+- test_post_logic.py for testing post_logic.py
