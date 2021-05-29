@@ -1,60 +1,131 @@
-from datetime import datetime
-from fastapi import FastAPI, HTTPException
-from typing import Any, Dict, List, NamedTuple, Optional
-from pydantic import BaseModel
-from post import Post
-from post_logic import PostLogic
+from posts.post_logic_router import PostLogic
+import asyncio
+import uvicorn
+from datetime import datetime, tzinfo
+from ws_lib.binance_client import BinanceClient
+from fastapi import FastAPI, HTTPException, WebSocket, Depends
+from typing import Any, Dict, List, Optional
+
+from fastapi.responses import HTMLResponse
+# from pydantic import BaseModel
+from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
+
+
+from starlette_graphene3 import GraphQLApp
+import graphene
+from graphql_lib.post_queries import Query
+from graphql_lib.post_mutations import Mutation
+import pytz
+from html_lib.load_html import load_html
+from ws_lib.servant import WSServant
+from ws_lib.binance_client import BinanceClient
+import logging
+from db_lib import connect
+from settings import settings
+
+# import by settings
+
+logging.basicConfig(level=settings.debug_level)
+logging.getLogger("asyncio").setLevel(settings.debug_level)
+post_logic = PostLogic()
+
+
+
 app = FastAPI()
-pl = PostLogic()
 
+
+
+@app.on_event("startup")
+async def startup():
+    await connect.database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await connect.database.disconnect()
+
+#Root page
 @app.get("/")
-async def root()-> Dict[str,str]:
-    return {"message": "Hello, this is the test blog app for GraCall"}
+async def root() -> HTMLResponse:
+    return HTMLResponse(load_html("main.html"))
 
-@app.post("/create-post/")
-async def create(post: Post) -> Optional[Post]:
-    id =  pl.insert(post)
-    new_post =  pl.get_post(id)
-    return new_post
+#wwbsocket test app
+@app.get("/wsapp/")
+async def ws_app() -> HTMLResponse:
+    return HTMLResponse(load_html("ws.html"))
+
+# WebSocket
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    
+    ws = WSServant(websocket)
+    await ws.controller()
+   
+        
+# GraphQL
+# context_value for proper dependenxy injection model
+app.add_route("/graphql/", 
+              GraphQLApp(schema=graphene.Schema(query=Query, mutation=Mutation), context_value={"post_logic": post_logic}))
 
 
-@app.put("/edit-post/", response_model=Post)
-async def edit(post: Post) -> Optional[Post]:
-    new_post =  pl.edit(post)
-    if new_post is None:
+#REST
+@app.post("/posts/", response_model=PostOut)
+async def create(post: PostBase) -> PostOut:
+    
+    new_post = post_logic.create(post)
+   
+    if new_post is not None:
+        return new_post
+    else:
+        raise HTTPException(status_code=409, detail="Item hasn't been created, please try it again later.")
+
+
+@app.put("/posts/{id}/", response_model=PostOut)
+async def update(id: int, post: PostOut) -> PostOut:
+    edited_post =  post_logic.update(post, id)
+    if edited_post is None:
         raise HTTPException(status_code=404, detail="Item not found")
     
-    return new_post
+    return edited_post
 
 
-@app.delete("/delete-post/{id}/", response_model=Post)
-async def delete(id: int) -> Optional[Post]:
+@app.delete("/posts/{id}/", response_model=PostOut)
+async def delete(id: int) -> PostOut:
     del_post = None
     if id is not None:
-        del_post =  pl.delete(id)
+        del_post =  post_logic.delete(id)
     if del_post is None:
         raise HTTPException(status_code=404, detail="Item not found")
     
     return del_post
 
 
-@app.get("/get-post/{id}/", response_model=Post)
-async def detail(id:int) -> Optional[Post]:
-    post =  pl.get_post(id)
+@app.delete("/posts/")
+async def delete_all():
+    post_logic.reset_posts()
+
+
+@app.get("/posts/{id}/", response_model=PostOut)
+async def detail(id: int) -> PostOut:
+    post =  post_logic.get_post(id)
     if post is None:
         raise HTTPException(status_code=404, detail="Item not found")
 
     return post
 
 
-@app.get("/get-posts-by-date/{datetime}", response_model=List[Post])
-async def posts_by_date(date:datetime) -> Optional[List[Post]]:
-    posts = pl.get_published_posts_from_date(date)
+@app.get("/posts/", response_model=PostDictT)
+async def posts(date_from: Optional[datetime] = None, skip: int = 0, limit: int = 20) -> PostDictT:
+
+    if date_from is not None and date_from.tzinfo is None:
+        raise HTTPException(
+            status_code=400, detail="there is no TimeZone in date_from")
     
+    posts = post_logic.get_posts(date_from,skip,limit)
+    # print("PPOSTSSSS")
+    # print(posts)
     return posts
 
-@app.get("/get-posts/", response_model=List[Post])
-async def posts() -> Optional[List[Post]]:
-    posts = pl.get_published_posts()
-    
-    return posts
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, access_log = False)

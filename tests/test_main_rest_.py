@@ -86,7 +86,7 @@ def test_posts():
     # cannot be called alone, it needs to be created post first
     response = client.get(
         url,
-        headers={"X-Token": "testtoken"}
+        # headers={"X-Token": "testtoken"}
     )
 
     assert response.status_code == 200, str(response.content)

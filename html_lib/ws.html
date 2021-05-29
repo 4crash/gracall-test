@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ws demo App</title>
+    </head>
+    <body>
+        <h1>WebSocket Crypto Demo</h1>
+         <hr>
+        <div>
+            This page shows crypto prices from binance web.
+        </div>
+        <hr>
+            <!-- <input type="text" id="messageText" autocomplete="off"/> -->
+            <label for="cars">Crypto Pairs:</label>
+            <select id="symbols">
+                <option value="btcusdt" selected>Bitcoin/USD</option>
+                <option value="bnbbtc">Binance coin/Bitcoin</option>
+                <option value="ethbtc">Ether/Bitcoin</option>
+                <option value="ltcbtc">Litecoin/Bitcoin</option>
+            </select>
+            <button  name="start" value="Start" onclick="sendMessage(event,'start');">Start</button>
+            <button  name="stop" value="Stop" onclick="sendMessage(event,'stop');">Stop</button>
+        
+        <div style="display:relative;float:right;" id='state'>
+                </div>
+        <div id='messages'>
+        </div>
+        <script>
+            
+            var ws;
+            var host;
+            wsConnect();
+            
+            function wsConnect(){
+                
+                host = "ws://127.0.0.1:8000/ws";
+                ws = new WebSocket(host);
+                ws.onerror = function(event){ 
+                    document.getElementById('state').innerHTML = "<span style='color:red'>Not connected.</span>"
+                    }
+                
+                ws.onclose = function(){
+                        // Try to reconnect in 5 seconds
+                        setTimeout(function(){
+                            wsConnect()
+                            }, 5000);
+                    };
+
+                ws.onmessage = function(event) {
+                    json_data = JSON.parse(event.data)
+                    var item = createContainer(json_data.symbol)
+                    item.innerHTML = json_data.symbol + " Price: " + json_data.price + " Quantity:" + json_data.quantity
+                };
+
+                ws.onopen = function(event){
+                      document.getElementById('state').innerHTML = "<span style='color:green'>Connected</span>"
+                }
+
+                document.getElementById('messages').innerHTML = ""
+            }
+
+          
+            function createContainer(name){
+                 var item = document.getElementById(name)
+                    if(item == null){
+                        var messages = document.getElementById('messages')
+                        var item = document.createElement('div')
+                        item.id  = name
+                        messages.appendChild(item)
+                    };
+                return item
+            };
+
+            function sendMessage(event,command) {
+                var input = document.getElementById("symbols")
+                
+                 var msg = {
+                    command: command,
+                    symbol: input.value,
+                };
+                
+                if (ws.readyState == WebSocket.CLOSING || ws.readyState == WebSocket.CLOSED){
+                        wsConnect()
+                } 
+
+                if (command == "stop"){
+                     var item = document.getElementById(input.value.toUpperCase())
+                    if(item != null){
+                        item.remove()
+                    }
+                } 
+
+                if(ws.readyState ==  WebSocket.CONNECTING){
+                    setTimeout(function(){
+                        sendToSerrver(msg,event);
+                        }, 1000);
+                } else {
+                 sendToSerrver(msg,event);
+                }
+               
+            };
+
+            function sendToSerrver(msg,event){
+  
+                ws.send(JSON.stringify(msg))
+                event.preventDefault()
+            }
+
+         
+
+        </script>
+    </body>
+</html>
