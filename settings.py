@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import List
 from pydantic import BaseSettings
 import logging
 
@@ -9,14 +9,26 @@ class StorageType:
     
 
 class Settings(BaseSettings):
+    # never used yet :)
     app_name: str = "Demo App"
+    
+    #binance websocket url
     binance_stream_url:str = "wss://stream.binance.com:9443/ws/{symbol}@depth"
+    
+    #allowed symbols from binance
     binance_symbols: List[str] = ["btcusdt", "bnbbtc", "ltcbtc", "ethbtc"]
-    sqlite_database_url: str = 'sqlite:///./demo.sqlite'
-    postgres_database_url: str = 'postgresql://postgres:password@localhost:5432/database'
+    
+    # sql lite for simple data store
+    database_url: str = 'sqlite:///./demo.sqlite'
+    
+    # in case to switch into postgress
+    # database_url: str = 'postgresql://postgres:password@localhost:5432/database'
+    
+    # logging level to print
     debug_level: int = logging.DEBUG
+    
+    # saved data into db or into List
     storage_type:str = StorageType.DB
-    #ugly error mesages shoudnt be in settings
-    wrong_id_mess: str = 'Post Id doesn\'t exists.'
+
 
 settings = Settings()

@@ -35,12 +35,12 @@ class PostLogic(Singleton,PostLogicAbstr):
         Returns:
             PostOut: new post
         """
-
+        
         post = PostModel(**out_post.dict())
         self.db.add(post)
         self.db.commit()
         self.db.refresh(post)
-        return post
+        return PostOut(**post.asdict())
 
     def delete(self, id:int) -> Optional[PostOut]:
         """Delete post with specific id from list
@@ -85,21 +85,23 @@ class PostLogic(Singleton,PostLogicAbstr):
         """
         return self.db.query(PostModel).all()
         
-    
-    def get_posts(self, date_from:datetime = None, skip:int = 0,limit:int = 10) -> PostDictT:
+    def get_posts(self, date_from: Optional[datetime] = None , skip: int = 0, limit: int = 10) -> PostDictT:
         """ Return posts list with published parameter set to True
 
         Returns:
             List[Post]: published posts list
         """
-        posts: PostDictT = PostDictT({})
-        results = self.db.query(PostModel).filter(PostModel.published == True and PostModel.published_at >= date_from).offset(skip).limit(limit).all()
+        
+        if date_from is None:
+            date_from = datetime.min.replace(tzinfo=pytz.UTC)
+        
+       
+        
+        results = self.db.query(PostModel).filter(PostModel.published == True).filter(
+            PostModel.published_at >= date_from).offset(skip).limit(limit).all()
+
         return results
-        if results is not None and len(results) > 0:
-            for row in results:
-                print(row.id)
-                posts[row.id] = PostOut(**row.asdict())
-        return posts
+       
         
     
     def get_post(self, id:int)->Optional[PostOut]:
@@ -116,7 +118,7 @@ class PostLogic(Singleton,PostLogicAbstr):
             
    
     def reset_posts(self)->None:
-        """Reove all items from list
+        """Remove all items from list
         """
         self.db.query(PostModel).delete()
         

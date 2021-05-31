@@ -1,10 +1,8 @@
 from posts.post_logic_router import PostLogic
-import asyncio
 import uvicorn
-from datetime import datetime, tzinfo
-from ws_lib.binance_client import BinanceClient
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, WebSocket, Depends
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from fastapi.responses import HTMLResponse
 # from pydantic import BaseModel
@@ -15,14 +13,11 @@ from starlette_graphene3 import GraphQLApp
 import graphene
 from graphql_lib.post_queries import Query
 from graphql_lib.post_mutations import Mutation
-import pytz
 from html_lib.load_html import load_html
 from ws_lib.servant import WSServant
-from ws_lib.binance_client import BinanceClient
 import logging
 from db_lib import connect
 from settings import settings
-
 # import by settings
 
 logging.basicConfig(level=settings.debug_level)
@@ -32,7 +27,6 @@ post_logic = PostLogic()
 
 
 app = FastAPI()
-
 
 
 @app.on_event("startup")
@@ -49,7 +43,7 @@ async def shutdown():
 async def root() -> HTMLResponse:
     return HTMLResponse(load_html("main.html"))
 
-#wwbsocket test app
+#websocket test app
 @app.get("/wsapp/")
 async def ws_app() -> HTMLResponse:
     return HTMLResponse(load_html("ws.html"))

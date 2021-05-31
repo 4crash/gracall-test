@@ -1,5 +1,5 @@
 from posts.post_logic_abstr import PostLogicAbstr
-from typing import Any, NewType, Optional, Dict, TypeVar
+from typing import Any, List, NewType, Optional, Dict, TypeVar
 from pydantic import BaseModel
 from datetime import date, datetime, tzinfo
 # import numpy as np
@@ -16,41 +16,43 @@ class PostLogic(Singleton, PostLogicAbstr):
     """
 
     def __init__(self) -> None:
-        self._posts = PostDictT({}) 
+        self._posts = PostDictT([]) 
 
 
     def create(self, post: PostBase) -> PostOut:
-        """insert post into posts array
+        """ Create post in list
 
         Args:
             post (PostBase): inserted post
 
         Returns:
-            PostOut: new post
+            PostOut: created post
         """
-        new_post_dict = post.dict()
-        new_post_dict["id"] = self._get_new_index()
-        new_post = PostOut(**new_post_dict)
-        
-        # new_post.created_at = pytz.utc.localize(
-        #     datetime.utcnow().replace(second=0, microsecond=0))
-        
-        self._posts[new_post.id] = new_post
-        return new_post
+        # create new dict object
+        new_post:Dict = post.dict()
+        new_post["id"] = self._get_new_index()
+        #convert to postout 
+        post_out = PostOut(**new_post)
+        self._posts.append(post_out)
+        return post_out
 
-    def delete(self, id:int) -> Optional[PostOut]:
+    def delete(self, post_id:int) -> Optional[PostOut]:
         """Delete post with specific id from list
 
         Args:
-            idx (int): post id
+            post_id (int): post id
 
         Returns:
-            Optional[PostOut]: deleted post, if exists else None
+            Optional[PostOut]: deleted post, if exists 
         """
-        
-        return self._posts.pop(id, None)
+        postition = self._get_position(post_id)
+        if postition is not None:
+            poped_post = self._posts.pop(postition)
+            return poped_post
+        else:
+            return postition
        
-    def update(self, post: PostOut, id: int) -> Optional[PostOut]:
+    def update(self, post: PostOut, post_id: int) -> Optional[PostOut]:
         """ Edit specific post
 
         Args:
@@ -60,13 +62,13 @@ class PostLogic(Singleton, PostLogicAbstr):
             Optional[PostOut]: updated post
         """
        
-        
-        # print("ID:  ---- " + str(id))
-        if id in self._posts.keys():
-            self._posts[id] = post
-            return post
+        postition = self._get_position(post_id)
+        if postition is not None:
+            self._posts[postition] = post
+            return self._posts[postition]
         else:
-            return None
+            return postition
+      
         
     def get_all_posts(self) -> PostDictT:
         """Return all non filtered posts
@@ -82,20 +84,20 @@ class PostLogic(Singleton, PostLogicAbstr):
         Returns:
             List[Post]: published posts list
         """
-        filtered_posts: PostDictT = PostDictT({})
+        filtered_posts: PostDictT = PostDictT([])
         i:int = 0
-        for key in self._posts: 
-            if self._posts[key].published is True and \
+        for row in self._posts: 
+            if row.published is True and \
                 (date_from is None or \
-                (date_from is not None and self._posts[key].published_at >= date_from)) and \
+                (date_from is not None and row.published_at >= date_from)) and \
                 i >= skip and i < (skip+limit):
                     
-                filtered_posts[key] = self._posts[key]
+                filtered_posts.append(row)
             i+=1     
         return filtered_posts
     
     
-    def get_post(self, id:int)->Optional[PostOut]:
+    def get_post(self, post_id:int)->Optional[PostOut]:
         """ Return specific post by id
 
         Args:
@@ -105,24 +107,39 @@ class PostLogic(Singleton, PostLogicAbstr):
             Optional[PostOut]: specific post
         """
         # question is if it should return only published post
-        return self._posts.get(id)
-      
+        postition = self._get_position(post_id)
+        if postition is not None:
+            return self._posts[postition]
+        else:
+            return postition
+    
+    def _get_position(self, post_id:int)->Optional[int]:
+        item: Optional[PostOut] = next(
+            (row for row in self._posts if row.id == post_id), None)
+        if item is not None:
+            return self._posts.index(item)
+        else:
+            return item
+    
     def _get_new_index(self) -> int:
         """ return the last index from post list
 
         Returns:
             [type]: max index 
         """
-      
-        if len(self._posts) > 0:
-            # print(self.__posts.keys())
-            return max(self._posts.keys())+1
-        else:
-            return 0
+        first_id = 1
+        if self._posts is None:
+            self._posts = PostDictT([])
+            return first_id
         
-   
+        elif len(self._posts) > 0:
+            return (self._posts[len(self._posts)-1].id +1)
+        
+        else:
+            return first_id
+
     def reset_posts(self)->None:
-        """Reove all items from list
+        """Remove all items from list
         """
         self._posts.clear() 
         

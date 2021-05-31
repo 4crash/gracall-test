@@ -4,13 +4,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, Session
 import databases
 from settings import settings
-from fastapi import Depends
+# modul for async database queries
+# database = databases.Database(settings.sqlite_database_url)
 
-database = databases.Database(settings.sqlite_database_url)
-logging.debug(database) 
-print(database)
 engine = create_engine(
-    settings.sqlite_database_url,
+    settings.database_url,
     # connect_args={"check_same_thread": False}
 )
 

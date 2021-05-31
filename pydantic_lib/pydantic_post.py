@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Dict, NewType, Text, Optional
+from typing import  List, NewType, Text
 from datetime import datetime
 from pydantic.types import constr
 import pytz
@@ -26,5 +26,5 @@ class PostOut(PostBase):
 
 
 
-PostDictT = NewType("PostDictT", Dict[int, PostOut])
+PostDictT = NewType("PostDictT", List[PostOut])
 

@@ -1,11 +1,6 @@
-import logging
-import graphene_pydantic
-
-from sqlalchemy.sql.sqltypes import Boolean
 from graphql_lib.post_models import PostGrapheneInputModel, PostGrapheneOutModel, PostGrapheneInputIDModel
 from pydantic_lib.pydantic_post import PostBase
 import graphene
-from settings import Settings 
 
 class CreatePost(graphene.Mutation):
     class Arguments:
@@ -28,7 +23,7 @@ class DeletePost(graphene.Mutation):
 
     @staticmethod
     def mutate(parent, info, id):
-        post = info.context["post_logic"].delete(id=id)
+        post = info.context["post_logic"].delete(id)
         if post is not None:
             return post
         else:
@@ -53,7 +48,7 @@ class UpdatePost(graphene.Mutation):
     @staticmethod
     def mutate(parent, info, post):
         # pb = PostBase(**post)
-        post = info.context["post_logic"].update(post, id=post.id)
+        post = info.context["post_logic"].update(post, post.id)
         if post is not None:
             return post
         else:

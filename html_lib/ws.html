@@ -7,9 +7,12 @@
     <body>
         <h1>WebSocket Crypto Demo</h1>
          <hr>
+         <div id='error' style="display:relative;float:right;color:red; font-weight:bold;"> 
+        </div>
         <div>
             This page shows crypto prices from binance web.
         </div>
+          
         <hr>
             <!-- <input type="text" id="messageText" autocomplete="off"/> -->
             <label for="cars">Crypto Pairs:</label>
@@ -26,6 +29,8 @@
                 </div>
         <div id='messages'>
         </div>
+
+        
         <script>
             
             var ws;
@@ -49,8 +54,14 @@
 
                 ws.onmessage = function(event) {
                     json_data = JSON.parse(event.data)
+                    if(json_data.error){
+                        console.log(json_data)
+                         document.getElementById('error').innerHTML = json_data.error
+                    } else {
+                    document.getElementById('error').innerHTML = ""
                     var item = createContainer(json_data.symbol)
                     item.innerHTML = json_data.symbol + " Price: " + json_data.price + " Quantity:" + json_data.quantity
+                    }
                 };
 
                 ws.onopen = function(event){
@@ -107,7 +118,7 @@
                 event.preventDefault()
             }
 
-         
+
 
         </script>
     </body>

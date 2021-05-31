@@ -1,14 +1,10 @@
-
 import json
 from asyncio import Queue
 import asyncio
-from typing import Dict
-import sys
 import websockets 
-from singleton import Singleton
-sys.path.append("../")
 import logging
 from settings import settings
+import socket
 # from ql_types import OrderSide
 # from ql_types.finance import LimitPrice, Quantity
 
@@ -25,19 +21,23 @@ from settings import settings
 # print(settings)
 
 
-class BinanceClient(Singleton):
+class BinanceClient:
+    """Gets data from binance  
+    """
     
-    def __init__(self) -> None:
-        self.ping_timeout = 2
-        self.sleep_time = 5
-        # self.streaming = True
        
     async def start_stream(self, q_data: Queue, symbol:str="btcusdt") -> None:
-        
+        """ Connect amd receive binance data
+
+        Args:
+            q_data (Queue): sending data to
+            symbol (str, optional):  specify crytopair symbol  . Defaults to "btcusdt".
+        """
+        sleep_time = 5
+        ping_timeout = 2
         stream_url = settings.binance_stream_url.format(symbol=symbol)
                 
         while True:
-            # reconnect when failed
             try:
                 async with websockets.connect(stream_url) as ws:
                     while True:
@@ -46,44 +46,27 @@ class BinanceClient(Singleton):
                         json_l = json.loads(data)
                         await q_data.put(json_l)
                         try:
-                            reply = await asyncio.wait_for(ws.recv(), timeout=self.ping_timeout)
+                            reply = await asyncio.wait_for(ws.recv(), timeout=ping_timeout)
                         except (asyncio.TimeoutError, websockets.exceptions.ConnectionClosed):
                             try:
                                 pong = await ws.ping()
-                                await asyncio.wait_for(pong, timeout=self.ping_timeout)
+                                await asyncio.wait_for(pong, timeout=ping_timeout)
                                 logging.debug(
                                     'Ping OK, keeping connection alive...')
                                 continue
                             except:
-                                await asyncio.sleep(self.sleep_time)
+                                await asyncio.sleep(sleep_time)
                                 break  # inner loop
-                        # do stuff with reply object
+                        
             except ConnectionRefusedError:
+                # reconnect when failed
                 logging.warning("cannot connect to binance")
-                await asyncio.sleep(self.sleep_time)
+                await asyncio.sleep(sleep_time)
                 continue
-            # receive
-           
-          
-                
-    async def print_data_test(self, queue:Queue) -> None:
-        while True:
-            data = await queue.get()
-            # json_l = json.loads(data)
-            price = data["b"][0][0]
-            print(price)
-            # json_l = json.load(data)
-                  
-    async def main(self):
-        q: asyncio.Queue = asyncio.Queue()
-        tasks = []
-        tasks.append(asyncio.create_task(bc.start_stream(q)))
-        tasks.append(asyncio.create_task(bc.print_data_test(q)))
-        await asyncio.gather(*tasks)
-        
-          
-if __name__ == "__main__":
+            except socket.gaierror:
+                # handling error lost connection in general  
+               await q_data.put({'error': 'Server connection error'})
+               break
+               
     
-    bc = BinanceClient()
-    asyncio.run(bc.main())
    

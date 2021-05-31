@@ -1,12 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
+from pydantic_lib.pydantic_post import PostBase, PostOut
 from starlette.testclient import TestClient
 from main import app
-from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 import pytz
-import pytest
 from urllib import parse
 
 client = TestClient(app)
@@ -28,23 +26,21 @@ def test_root():
     assert response.status_code == 200
    
 
-@pytest.mark.detail
 def test_create_post():
-    # print(jsonable_encoder(post))
+    global created_post
     response = client.post(
         url,
         json = jsonable_encoder(post)
 
     )
     
-    global created_post
+    
     created_post = PostOut(**response.json())
     
     assert response.status_code == 200
     assert response.json()["title"] == jsonable_encoder(post)["title"]
 
 
-@pytest.mark.detail
 def test_detail():
     
     response = client.get(

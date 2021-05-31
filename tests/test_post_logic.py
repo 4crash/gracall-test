@@ -2,14 +2,18 @@ from datetime import datetime, timedelta
 from typing import Dict
 from pydantic.errors import DateError
 import pytest
-from pydantic_lib.pydantic_post import PostBase, PostDictT
-from posts.post_logic import PostLogic
+from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
+from posts.post_logic_router import PostLogic
 import pytz
 
 pl = PostLogic()
-post = PostBase(id=0,title="Test", author="edgar",
+post = PostBase(title="Test", author="edgar",
                   content="lorem ipsum test", published=True, published_at=datetime.now(pytz.utc))
 pl.reset_posts()
+
+
+#fix In real app tests must be runned on the test tables
+
 
 def test_create_get_post():
     
@@ -65,10 +69,12 @@ def test_get_detail():
 
 
 def test_update():
+    
+    # post insert
     new_title = "changed title"
-    new_post = pl.create(post.copy())
-    new_post.title = new_title
-    new_post = pl.create(new_post)
+    post.title = new_title
+    new_post:PostOut = pl.create(post.copy())
+     
     new_post = pl.update(new_post, new_post.id)
     
     assert new_post is not None, "new post doesnt exists"
