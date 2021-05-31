@@ -28,15 +28,15 @@ post_logic = PostLogic()
 
 app = FastAPI()
 
+# async database queries not finished yet
+# @app.on_event("startup")
+# async def startup():
+#     await connect.database.connect()
 
-@app.on_event("startup")
-async def startup():
-    await connect.database.connect()
 
-
-@app.on_event("shutdown")
-async def shutdown():
-    await connect.database.disconnect()
+# @app.on_event("shutdown")
+# async def shutdown():
+#     await connect.database.disconnect()
 
 #Root page
 @app.get("/")
