@@ -16,7 +16,6 @@ from graphql_lib.post_mutations import Mutation
 from html_lib.load_html import load_html
 from ws_lib.servant import WSServant
 import logging
-from db_lib import connect
 from settings import settings
 # import by settings
 
