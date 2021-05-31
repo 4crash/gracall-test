@@ -46,5 +46,8 @@
 - demo.sqlite - database file
 
 ### Tests ./tests
-- test_app.py for testing main.py REST api
 - test_post_logic.py for testing post_logic.py
+- test_binance_client.py testing download exchange data
+- test_post_rest - test rest api
+- test_postgraphql - test graphql api
+- test_websocket - not finished yet
