@@ -30,6 +30,7 @@ py==1.10.0
 pycodestyle==2.7.0
 pycparser==2.20
 pydantic==1.8.2
+pydantic-sqlalchemy==0.0.9
 pyparsing==2.4.7
 pytest==6.2.3
 pytest-asyncio==0.15.1
