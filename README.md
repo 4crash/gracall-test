@@ -7,7 +7,6 @@
 - Websockets are used with asyncio. FrontEnd Client connects to /ws url where Servant class waiting for commands and starts binance asyncio task for getting streamed prices for specific symbol from binance exchange.
     BinanceClient then sends data over asyncio.queue  back to connected client over Servant.
 - The most of the functionality is covered by tests
-- All methods are static typed
 
 
 
@@ -31,7 +30,7 @@
 - git CLI
 
 ## How to install and run app :
-- This guide was written for win OS, please see specific commands manual for your OS system.
+- This guide has been written for win OS, please see specific commands manual for your OS system.
 - Create folder where the project files will be stored 
 - Open the folder
 - Download files from git repository git clone https://github.com/4crash/gracall-test
