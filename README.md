@@ -31,7 +31,7 @@
 - git CLI
 
 ## How to install and run app :
-- This guide is wrote for win OS, please see specific commands manual for your OS system.
+- This guide was written for win OS, please see specific commands manual for your OS system.
 - Create folder where the project files will be stored 
 - Open the folder
 - Download files from git repository git clone https://github.com/4crash/gracall-test
