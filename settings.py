@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     # database_url: str = 'postgresql://postgres:password@localhost:5432/database'
     
     # logging level to print
-    debug_level: int = logging.DEBUG
+    debug_level: int = logging.WARNING
     
     # saved data into db or into List
     storage_type:str = StorageType.DB

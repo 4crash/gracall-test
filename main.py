@@ -16,7 +16,6 @@ from graphql_lib.post_mutations import Mutation
 from html_lib.load_html import load_html
 from ws_lib.servant import WSServant
 import logging
-from db_lib import connect
 from settings import settings
 # import by settings
 
@@ -28,15 +27,15 @@ post_logic = PostLogic()
 
 app = FastAPI()
 
+# async database queries not finished yet
+# @app.on_event("startup")
+# async def startup():
+#     await connect.database.connect()
 
-@app.on_event("startup")
-async def startup():
-    await connect.database.connect()
 
-
-@app.on_event("shutdown")
-async def shutdown():
-    await connect.database.disconnect()
+# @app.on_event("shutdown")
+# async def shutdown():
+#     await connect.database.disconnect()
 
 #Root page
 @app.get("/")

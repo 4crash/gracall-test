@@ -1,30 +1,13 @@
 from pydantic import BaseModel
-from typing import  List, NewType, Text
+from typing import  List, NewType, Set, Text
 from datetime import datetime
 from pydantic.types import constr
 import pytz
+from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+from db_lib.post_model import PostModel
 
 
-class PostBase(BaseModel):
-    title: constr(max_length=20)
-    author: constr(max_length=50)
-    content: Text
-    published_at: datetime = pytz.utc.localize(
-        datetime.utcnow().replace(second=0, microsecond=0))
-    published: bool = False
-    class Config:
-        orm_mode = True
-
-    
-class PostOut(PostBase):
-    id:int
-    created_at: datetime = pytz.utc.localize(
-        datetime.utcnow().replace(second=0, microsecond=0))
-
-    class Config:
-        orm_mode = True
-
-
-
+PostOut = sqlalchemy_to_pydantic(PostModel)
+PostBase = sqlalchemy_to_pydantic(PostModel,exclude=["id","created_at"])
 PostDictT = NewType("PostDictT", List[PostOut])
 
