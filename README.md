@@ -1,8 +1,16 @@
-# demo-app
-- FastAPI code showcase  
+# Demo-app demostration of coding skills
+- Main libraries: FastAPI, websockets, asyncio, Graphene, Pydantic, SQLALchemy
+- The App has 3 connection points REST, GraphQL, Websockets and one websocket client for donwloading binance exchange data 
+- App has only one data structure named Post, so there's no datamodel relationships for now.
+- Posts can be stored in database or in a list. it's switchable in settings. For ccoding demonstration than for real usage. 
+- Post has parent abstract class for templating. post_logic_abstr.PostLogicAbstr and two inherited classes from abstract like  post_logic.PostLogic and post_logic_db.PostLogic
+- Websockets are used with asyncio. FrontEnd Client connects to /ws url where Servant class waiting for commands and starts binance asyncio task for getting streamed prices for specific symbol from binance exchange.
+    BinanceClient then sends data over asyncio.queue  back to Servant and connected client. 
+
+
 
 ## Notes
-- Frontend is easy and functional targeted FE is not main aim of this app
+- Frontend is not intended for code demonstration. Please bare in mind. :)
 - There is no Docker file. Iam struggling with bluescreen on my computer when  Docker Terminal is launched. (Hope it will be fixed soon)
 
 ## TODO
@@ -35,7 +43,7 @@
     - db_lib - sqlalchemy ORM files with connection and mmodels
     - graphql_lib - pydantic models ingerited from pydantic base mmodels , queries and mutations logic
     - html_lib - simple html files 
-    - posts - post_log_abstr parent for post_logic and post_logic_db
+    - posts - post_logic_abstr parent for post_logic and post_logic_db
     - pydantic_lib - pydantic models for rest and graphql type checking 
     - tests - classic pytests
     - ws_lib - servant.py for web client and binance_client.py for exchange data download
