@@ -5,12 +5,12 @@
 - Posts can be stored in database or in a list. it's switchable in settings. For ccoding demonstration than for real usage. 
 - Post has parent abstract class for templating. post_logic_abstr.PostLogicAbstr and two inherited classes from abstract like  post_logic.PostLogic and post_logic_db.PostLogic
 - Websockets are used with asyncio. FrontEnd Client connects to /ws url where Servant class waiting for commands and starts binance asyncio task for getting streamed prices for specific symbol from binance exchange.
-    BinanceClient then sends data over asyncio.queue  back to Servant and connected client. 
+    BinanceClient then sends data over asyncio.queue  back to connected client over Servant.
 
 
 
 ## Notes
-- Frontend is not intended for code demonstration. Please bare in mind. :)
+- Please bear in mind that Frontend is not intended for code demonstration. :)
 - There is no Docker file. Iam struggling with bluescreen on my computer when  Docker Terminal is launched. (Hope it will be fixed soon)
 
 ## TODO
