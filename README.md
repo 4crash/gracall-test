@@ -1,4 +1,4 @@
-# Demo-app demostration of coding skills
+# Demo-app
 - Main libraries: FastAPI, websockets, asyncio, Graphene, Pydantic, SQLALchemy, pytest, mypy
 - The App has 3 connection points REST, GraphQL, Websockets and one websocket client for donwloading binance exchange data 
 - App has only one data structure named Post, so there's no datamodel relationships for now.
