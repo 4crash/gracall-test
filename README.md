@@ -25,7 +25,7 @@
 - pip
 - git CLI
 
-## How to install and run app :
+## Install
 - This guide has been written for win OS, please see specific commands manual for your OS.
 - Create folder where the project will be stored 
 - Open the folder
@@ -38,7 +38,7 @@
 - Open http://127.0.0.1:8000/redoc in browser for REST
 - open http://127.0.0.1:8000/wsapp in browser for websockets
 
-## Structure:
+## Structure
 - Folders
     - db_lib - sqlalchemy ORM files with connection and models
     - graphql_lib - pydantic models, queries and mutations
@@ -53,7 +53,7 @@
 - settings.py - app settings
 - demo.sqlite - database file
 
-### Tests ./tests
+## Tests
 - test_post_logic.py - testing post_logic.py it's dependent on settings directive: storage_type 
 - test_binance_client.py - test downloading exchange data
 - test_post_rest - test rest api
