@@ -18,13 +18,13 @@ class Settings(BaseSettings):
     #allowed symbols from binance
     binance_symbols: List[str] = ["btcusdt", "bnbbtc", "ltcbtc", "ethbtc"]
     
-    # sql lite for simple data store
+    # sql-lite 
     database_url: str = 'sqlite:///./demo.sqlite'
     
-    # in case to switch into postgress
+    # postgress
     # database_url: str = 'postgresql://postgres:password@localhost:5432/database'
     
-    # logging level to print
+    # logging level
     debug_level: int = logging.WARNING
     
     # saved data into db or into List

@@ -1,14 +1,10 @@
 from posts.post_logic_router import PostLogic
 import uvicorn
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, WebSocket, Depends
+from fastapi import FastAPI, HTTPException, WebSocket
 from typing import Optional
-
 from fastapi.responses import HTMLResponse
-# from pydantic import BaseModel
 from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
-
-
 from starlette_graphene3 import GraphQLApp
 import graphene
 from graphql_lib.post_queries import Query
@@ -17,8 +13,8 @@ from html_lib.load_html import load_html
 from ws_lib.servant import WSServant
 import logging
 from settings import settings
-# import by settings
 
+# import by settings
 logging.basicConfig(level=settings.debug_level)
 logging.getLogger("asyncio").setLevel(settings.debug_level)
 post_logic = PostLogic()
