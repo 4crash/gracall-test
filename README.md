@@ -1,11 +1,13 @@
 # Demo-app
-- Main libraries: FastAPI, websockets, asyncio, Graphene, Pydantic, SQLALchemy, pytest, mypy
-- The App has 3 connection points REST, GraphQL, Websockets and one websocket client for downloading binance exchange data 
-- App has only one data structure named Post for now.
+- Main libraries: FastAPI, websockets, asyncio, Graphene, Pydantic, SQLALchemy, pytest, mypy, uvicorn
+- The App has three connection points REST, GraphQL, Websockets. 
+- One Websocket client for downloading binance exchange data 
+- One data structure named Post for now.
 - Posts can be stored in database or in a list. Switchable in settings. 
 - Post has parent abstract class - PostLogicAbstr and two inherited classes  post_logic.PostLogic and post_logic_db.PostLogic
-- Websockets are used with asyncio. FrontEnd Client connects to /ws url where Servant class waiting for commands and starts binance asyncio task for getting streamed prices from binance exchange.
+- Websockets are used with asyncio. FrontEnd Client connects to /ws url where Servant class waiting for commands and starts binance asyncio     task for getting streamed prices from binance exchange.
     BinanceClient then sends data over asyncio.queue  back to connected client over Servant.
+- Model declara
 
 
 ## Notes
@@ -25,10 +27,8 @@
 - pip
 - git CLI
 
-## Install
-- This guide has been written for win OS, please see specific commands manual for your OS.
-- Create folder where the project will be stored 
-- Open the folder
+## Install Win OS
+- Create folder and open it
 - Download files from git repository: git clone https://github.com/4crash/gracall-test
 - Create virtual environment python -m venv ./venv
 - Activate virtual environment  .\venv\Scripts\activate

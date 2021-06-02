@@ -1,9 +1,5 @@
 from datetime import datetime
-from typing import TypedDict
-from sqlalchemy.ext.automap import automap_base
-from abc import ABC
 from sqlalchemy import  Column,  Integer, String
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from db_lib.connect import Base
 import pytz

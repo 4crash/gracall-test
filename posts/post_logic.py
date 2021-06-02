@@ -1,11 +1,8 @@
 from posts.post_logic_abstr import PostLogicAbstr
-from typing import Any, List, NewType, Optional, Dict, TypeVar
-from pydantic import BaseModel
-from datetime import date, datetime, tzinfo
-# import numpy as np
+from typing import Optional, Dict
+from datetime import datetime
 from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
 from singleton import Singleton
-import pytz
 
 
 

@@ -7,24 +7,18 @@ import asyncio
 client = TestClient(app)
 import pytest
 
-# def test_wss_homepage():
-   
-#     response = client.get('/wsapp/')
-#     assert response.status_code == 200
+
 @pytest.mark.skip("not finished yet")
 def test_ws():
     async def connect(q: asyncio.Queue):
         try:
             async with websockets.connect("ws://127.0.0.1:8000/ws") as ws:
-                print("mrda1")
                 json = {
                     "command": "start",
                     "symbol": "btcusdt",
                 }
                 ws.send(json)
-                print("mrda2")
                 data = await ws.recv()
-                print("mrda3")
                 q.put(data)
                 json = {
                     "command": "stop",

@@ -1,16 +1,12 @@
 from posts.post_logic_abstr import PostLogicAbstr
-from typing import Any, NewType, Optional, Dict, TypeVar
-from pydantic import BaseModel
-from datetime import date, datetime, tzinfo
-# import numpy as np
+from typing import  Optional
+from datetime import  datetime
 from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
 from singleton import Singleton
 from db_lib.connect import get_db
 from db_lib.post_model import PostModel
 from sqlalchemy.orm import Session
-from fastapi import Depends
 import pytz
-from sqlalchemy.sql import select
 import logging
 
 

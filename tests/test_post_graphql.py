@@ -1,5 +1,4 @@
 import graphene
-from fastapi.encoders import jsonable_encoder
 from graphene.test import Client
 from graphql_lib.post_queries import Query
 from graphql_lib.post_mutations import Mutation

@@ -1,8 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Dict
-from pydantic.errors import DateError
-import pytest
-from pydantic_lib.pydantic_post import PostBase, PostDictT, PostOut
+from pydantic_lib.pydantic_post import PostBase, PostOut
 from posts.post_logic_router import PostLogic
 import pytz
 
@@ -12,7 +9,7 @@ post = PostBase(title="Test", author="edgar",
 pl.reset_posts()
 
 
-#fix In real app tests must be runned on the test tables
+#fix In real app tests must be runned on the mock tables
 
 
 def test_create_get_post():
