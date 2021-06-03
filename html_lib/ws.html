@@ -108,9 +108,10 @@
                         var item = document.createElement('div')
                         item.id  = data.symbol
                         messages.appendChild(item)
-                        item.innerHTML = data.symbol + " Price: " + data.price + " Quantity:" + data.quantity
+                   
 
                     };
+                item.innerHTML = data.symbol + " Price: " + data.price + " Quantity:" + data.quantity
             };
             //  check websocket state
             function sendMessage(event,command) {
