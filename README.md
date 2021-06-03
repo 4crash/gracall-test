@@ -28,7 +28,7 @@
 - pip
 - git CLI
 
-## Install Win OS
+## Install steps for Win OS
 - Create folder and open it
 - Download files from git repository: git clone https://github.com/4crash/gracall-test
 - Create virtual environment python -m venv ./venv
