@@ -13,7 +13,7 @@ import logging
 
 class PostLogic(Singleton,PostLogicAbstr):
     """ 
-        Class for CRUD operations with Blog Posts
+        Class for posts CRUD operations
 
     """
     

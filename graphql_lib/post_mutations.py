@@ -1,6 +1,9 @@
-from graphql_lib.post_models import PostGrapheneInputModel, PostGrapheneOutModel, PostGrapheneInputIDModel
+from graphql_lib.post_models import (PostGrapheneInputModel,
+                                     PostGrapheneOutModel,
+                                     PostGrapheneInputIDModel)
 from pydantic_lib.pydantic_post import PostBase
 import graphene
+
 
 class CreatePost(graphene.Mutation):
     class Arguments:
@@ -27,17 +30,17 @@ class DeletePost(graphene.Mutation):
         if post is not None:
             return post
         else:
-            raise Exception("Wrong Id")
+            raise Exception("Item not found")
 
 
 class DeleteAllPosts(graphene.Mutation):
-   
     Output = graphene.Boolean
 
     @staticmethod
     def mutate(parent, info):
         info.context["post_logic"].reset_posts()
         return True
+
 
 class UpdatePost(graphene.Mutation):
     class Arguments:
@@ -52,7 +55,8 @@ class UpdatePost(graphene.Mutation):
         if post is not None:
             return post
         else:
-            raise Exception("Wrong Id")
+            raise Exception("Item not found")
+
 
 class Mutation(graphene.ObjectType):
     create_post = CreatePost.Field()

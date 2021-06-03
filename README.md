@@ -15,11 +15,12 @@
 - There is no Docker file. Iam struggling with bluescreen on my computer when  Docker Terminal is launched. (Hope it will be fixed soon)
 
 ## TODO
-- Change folders structure
-- Try app with postgress DB
-- Add live list of added posts to websocket page
-- ~~Merge SQlalchemy and pydantic dataModels declaration~~
-- Create solid structure for queuing system , errors, data 
+- [ ] Change folders structure
+- [x] Test app with postgress DB
+- [x] Add live list of added posts to websocket page
+- [x] Merge SQlalchemy and pydantic dataModels declaration
+- [x] Create solid structure for queuing system , errors, data 
+- [ ] Use some kind of vocabulary  for text gathering, language mutations 
 
 ## Environment
 - python 3.9.x

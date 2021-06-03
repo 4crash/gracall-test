@@ -60,12 +60,12 @@ class BinanceClient:
                         
             except ConnectionRefusedError:
                 # reconnect when failed
-                logging.warning("cannot connect to binance")
+                logging.warning("cannot connect to Binance")
                 await asyncio.sleep(sleep_time)
                 continue
             except socket.gaierror:
                 # handling error lost connection in general  
-               await q_data.put({'error': 'Server connection error'})
+               await q_data.put({'error': 'Binance server connection error'})
                break
                
     

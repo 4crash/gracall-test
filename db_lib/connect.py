@@ -1,8 +1,6 @@
-import logging
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, Session
-import databases
 from settings import settings
 # modul for async database queries
 # database = databases.Database(settings.sqlite_database_url)

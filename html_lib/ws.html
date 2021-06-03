@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>ws demo App</title>
+        <title>WS demo App</title>
     </head>
     <body>
-        <h1>WebSocket Crypto Demo</h1>
+        <h1>WebSocket Demo</h1>
          <hr>
          <div id='error' style="display:relative;float:right;color:red; font-weight:bold;"> 
         </div>
@@ -30,13 +30,19 @@
         <div id='messages'>
         </div>
 
+        <div id='postsContainer'>
+        Last Posts:
+            <ul id='posts'>
+            </ul>
+        </div>
+
         
         <script>
             
             var ws;
             var host;
             wsConnect();
-            
+            // connect to websocket and register all callbacks
             function wsConnect(){
                 
                 host = "ws://127.0.0.1:8000/ws";
@@ -53,14 +59,21 @@
                     };
 
                 ws.onmessage = function(event) {
-                    json_data = JSON.parse(event.data)
+                    json_data = JSON.parse(JSON.parse(event.data))
+                    
+
                     if(json_data.error){
-                        console.log(json_data)
+                        //console.log(json_data)
                          document.getElementById('error').innerHTML = json_data.error
-                    } else {
-                    document.getElementById('error').innerHTML = ""
-                    var item = createContainer(json_data.symbol)
-                    item.innerHTML = json_data.symbol + " Price: " + json_data.price + " Quantity:" + json_data.quantity
+                    } 
+                    else if(json_data.type == "data" && json_data.desc == "binance") {
+                        document.getElementById('error').innerHTML = ""
+                        var item = createBinanceContainer(json_data.data)
+                    }
+                    else if(json_data.type == "data" && json_data.desc == "post") {
+                        // console.log(json_data)
+                        document.getElementById('error').innerHTML = ""
+                        createPostsContainer(json_data.data)
                     }
                 };
 
@@ -70,19 +83,36 @@
 
                 document.getElementById('messages').innerHTML = ""
             }
-
-          
-            function createContainer(name){
-                 var item = document.getElementById(name)
+            function createPostsContainer(data){
+                
+                var messages = document.getElementById('posts')
+                messages.innerHTML = ""
+                
+                data = JSON.parse(data)
+               
+                for(let i in data) {
+                        var item = document.createElement('li')
+                        li_item = messages.appendChild(item)
+                        li_item.innerHTML = "title: " + data[i].title + " | author:" + data[i].author + " | date:" + data[i].created_at
+                    }
+                
+                    
+                
+            };
+            // create divs for binance data
+            function createBinanceContainer(data){
+                
+                 var item = document.getElementById(data.symbol)
                     if(item == null){
                         var messages = document.getElementById('messages')
                         var item = document.createElement('div')
-                        item.id  = name
+                        item.id  = data.symbol
                         messages.appendChild(item)
-                    };
-                return item
-            };
+                        item.innerHTML = data.symbol + " Price: " + data.price + " Quantity:" + data.quantity
 
+                    };
+            };
+            //  check websocket state
             function sendMessage(event,command) {
                 var input = document.getElementById("symbols")
                 
@@ -111,7 +141,7 @@
                 }
                
             };
-
+            // simple fce send message
             function sendToSerrver(msg,event){
   
                 ws.send(JSON.stringify(msg))

@@ -58,7 +58,7 @@ class PostLogicAbstr(ABC):
         pass
 
     @abstractclassmethod
-    def get_posts(self, date_from: datetime, skip: int, limit: int) -> PostDictT:
+    def get_posts(self, date_from:  Optional[datetime] = None, skip: int = 0, limit: int = 10) -> PostDictT:
         """ Return posts list with published parameter set to True
 
         Returns:
