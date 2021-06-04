@@ -29,10 +29,9 @@ class WSServer:
         
     
     async def receive_and_send_binance(self, queue: asyncio.Queue)->None:
-        """Receive data from exchange and send them to client
-
+        """Receive data from binance exchange and send them to client
         Args:
-            queue (asyncio.Queue): listen for messages from binance data 
+            queue (asyncio.Queue): listen for messages from binance data
         """
         
         while True:
@@ -64,7 +63,7 @@ class WSServer:
                     
     
     async def receive_and_send_posts(self)->None:
-        """Receive data from exchange and send them to client
+        """Receive data from binance exchange and send them to client
 
         Args:
             queue (asyncio.Queue): listen for messages from binance data 
@@ -89,7 +88,7 @@ class WSServer:
         """ Listen what client's request is and do the appropriate action
 
         Args:
-            data_q (asyncio.Queue): Queue for llistening data from binance corountine 
+            data_q (asyncio.Queue): Queue for listening data from binance corountine 
             loop (asyncio.AbstractEventLoop): corountine loop for adding tasks to it by client crypto symbol
         """
         
@@ -107,7 +106,6 @@ class WSServer:
                     logging.debug(message.desc)
                     
                     if message.type == MessageType.binance_command:
-                        
                         self.process_binance_command(message=message,queue=queue)
                        
         except:
@@ -120,7 +118,7 @@ class WSServer:
         """ Start or stop coroutine with binance streaming data
 
         Args:
-            message (WsMessage): parsed received message from client
+            message (WsMessage): parsed message from client
             queue (Queue): queue messages between wsServer and binance croutines
         """
         # check if symbol exists
@@ -144,9 +142,7 @@ class WSServer:
     
     async def controller(self)->None:
         """Starts resolver with connection acceptation and select action by commands from client.
-            After that read which data client wants and start new corountine with connection to binance 
-            
-            Start receive and send dta to client in separated corountine
+            Read what kind of data client require and start/stop new corountine with connection to binance 
         """
         #set messages for data
         queue: asyncio.Queue = asyncio.Queue(100)
