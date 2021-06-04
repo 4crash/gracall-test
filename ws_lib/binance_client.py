@@ -46,7 +46,7 @@ class BinanceClient:
                         json_l = json.loads(data)
                         await q_data.put(json_l)
                         try:
-                            reply = await asyncio.wait_for(ws.recv(), timeout=ping_timeout)
+                            await asyncio.wait_for(ws.recv(), timeout=ping_timeout)
                         except (asyncio.TimeoutError, websockets.exceptions.ConnectionClosed):
                             try:
                                 pong = await ws.ping()

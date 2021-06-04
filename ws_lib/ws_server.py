@@ -1,4 +1,6 @@
 import asyncio
+from asyncio.events import AbstractEventLoop
+from asyncio.queues import Queue
 import dataclasses
 import logging
 from typing import Dict, List, Optional
@@ -9,18 +11,20 @@ from settings import settings
 from posts.post_logic_router import PostLogic
 from posts.post_logic_abstr import PostLogicAbstr
 from ws_lib.message_types import (ClientCommand, 
-                                  CryptoRequestData, DataType, 
+                                  DataType, 
                                   MessageType,
-                                  WsMessageData)
+                                  WsMessage)
 
 
 
-class WSServant:
+class WSServer:
     """Start ws server and receiving requests from the client.
         Start binance data listening and sending it to the client.
     """
     def __init__(self, websocket:WebSocket):
         self.websocket = websocket
+        self.bc = BinanceClient()
+        self.tasks: Dict[str, asyncio.Task] = {}
         
         
     
@@ -39,7 +43,7 @@ class WSServant:
             else: 
                 try:
                     # parse data from binance, data could be missing in some cases, therefore index error
-                    res_data = WsMessageData(type=MessageType.data,
+                    res_data = WsMessage(type=MessageType.data,
                                              desc= DataType.binance,
                                              data={
                                                  "symbol": data["s"],
@@ -69,7 +73,7 @@ class WSServant:
         while True:
             posts = pl.get_posts(skip=0, limit=10)
             if len(posts) > 0:
-                res_data = WsMessageData(type=MessageType.data,
+                res_data = WsMessage(type=MessageType.data,
                                          desc=DataType.post,
                                          data=json.dumps([{"title":row.title,
                                                            "author": row.author, 
@@ -81,7 +85,7 @@ class WSServant:
               
                     
 
-    async def command_router(self,data_q:asyncio.Queue, loop:asyncio.AbstractEventLoop)->None:
+    async def command_router(self,queue:asyncio.Queue)->None:
         """ Listen what client's request is and do the appropriate action
 
         Args:
@@ -89,10 +93,7 @@ class WSServant:
             loop (asyncio.AbstractEventLoop): corountine loop for adding tasks to it by client crypto symbol
         """
         
-        await self.websocket.accept()
-        bc = BinanceClient()
-        tasks:Dict[str,asyncio.Task] = {}
-        
+        await self.websocket.accept()        
         try:
             while True:
                 data = await self.websocket.receive()
@@ -102,30 +103,44 @@ class WSServant:
                     # get request in json
                     request = json.loads(message)
                     # parse it to more readable structure 
-                    message = CryptoRequestData(**request)
-                    logging.debug(message.command)
+                    message = WsMessage(**request)
+                    logging.debug(message.desc)
                     
-            
-                    if message.command == ClientCommand.start:
-                        #check if symbol for binance is in the list and start new task with binance streaming
-                        if message.symbol in settings.binance_symbols:
-                            start_task:asyncio.Task = loop.create_task(bc.start_stream(data_q, message.symbol), name=message.symbol)
-                            tasks[message.symbol] = start_task
+                    if message.type == MessageType.binance_command:
                         
-                        logging.info("start streaming from binance")
-                    
-                    if message.command == ClientCommand.stop:
-                        stop_task:Optional[asyncio.Task] = tasks.get(message.symbol)
-                        if stop_task is not None:
-                            stop_task.cancel()
-                        logging.info("stop streaming from binance")
+                        self.process_binance_command(message=message,queue=queue)
+                       
         except:
-            # kill all binance streaming tasks when ws client connection was lost or something else goes wrong
-            for task in tasks.values():
+            # kill all binance streaming tasks when WSclient connection was lost or something else goes wrong
+            for task in self.tasks.values():
                 task.cancel()
             
             
+    def process_binance_command(self, message:WsMessage, queue:Queue):
+        """ Start or stop coroutine with binance streaming data
 
+        Args:
+            message (WsMessage): parsed received message from client
+            queue (Queue): queue messages between wsServer and binance croutines
+        """
+        # check if symbol exists
+        if message.symbol in settings.binance_symbols:
+            # start task with binance streaming
+            if message.desc == ClientCommand.start:
+                # check if symbol for binance is in the list and start new task with binance streaming
+                start_task: asyncio.Task = self.loop.create_task(self.bc.start_stream(queue, 
+                                                                                    message.symbol),
+                                                                                    name=message.symbol)
+                self.tasks[message.symbol] = start_task
+                logging.info("start streaming from binance")
+                
+            # stop task with binance streaming
+            if message.desc == ClientCommand.stop:
+                stop_task:Optional[asyncio.Task] = self.tasks.get(message.symbol)
+                if stop_task is not None:
+                    stop_task.cancel()
+                logging.info("stop streaming from binance")
+        
     
     async def controller(self)->None:
         """Starts resolver with connection acceptation and select action by commands from client.
@@ -134,17 +149,17 @@ class WSServant:
             Start receive and send dta to client in separated corountine
         """
         #set messages for data
-        data_q: asyncio.Queue = asyncio.Queue(100)
+        queue: asyncio.Queue = asyncio.Queue(100)
         tasks: List[asyncio.Task] = []
-        loop = asyncio.get_event_loop()
+        self.loop:AbstractEventLoop = asyncio.get_event_loop()
         # receiving and start listenening commands task
-        tasks.append(asyncio.create_task(self.command_router(data_q, loop)))
+        tasks.append(asyncio.create_task(self.command_router(queue)))
         # receiving data from binance module
-        tasks.append(asyncio.create_task(self.receive_and_send_binance(data_q)))
-        # iterate over time period and check last n posts in database 
+        tasks.append(asyncio.create_task(self.receive_and_send_binance(queue)))
+        # iterating over time period and check last n posts in database 
         tasks.append(asyncio.create_task(self.receive_and_send_posts()))
         # gather asincio tasks and run
-        asyncio.run(await asyncio.gather(*tasks, loop=loop))
+        asyncio.run(await asyncio.gather(*tasks, loop=self.loop))
 
         
 

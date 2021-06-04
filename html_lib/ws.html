@@ -22,8 +22,8 @@
                 <option value="ethbtc">Ether/Bitcoin</option>
                 <option value="ltcbtc">Litecoin/Bitcoin</option>
             </select>
-            <button  name="start" value="Start" onclick="sendMessage(event,'start');">Start</button>
-            <button  name="stop" value="Stop" onclick="sendMessage(event,'stop');">Stop</button>
+            <button  name="start" value="start" onclick="sendMessage(event,'start');">Start</button>
+            <button  name="stop" value="stop" onclick="sendMessage(event,'stop');">Stop</button>
         
         <div style="display:relative;float:right;" id='state'>
                 </div>
@@ -118,7 +118,8 @@
                 var input = document.getElementById("symbols")
                 
                  var msg = {
-                    command: command,
+                    type: "binance_command",
+                    desc: command,
                     symbol: input.value,
                 };
                 

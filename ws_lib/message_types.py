@@ -16,24 +16,13 @@ class MessageType:
     error: str = "error"
     data: str = "data"
     warning: str = "warning"
-    command: str = ClientCommand
+    binance_command: str = "binance_command"
 
 
 @dataclass
-class WsMessageData:
+class WsMessage:
     type: MessageType
     desc: str
-    data: Optional[Dict]
+    data: Optional[Dict] = None
+    symbol: Optional[str] = None
 
-
-@dataclass
-class CryptoRequestData:
-    symbol: str
-    command: str
-
-
-# @dataclass
-# class BinanceData:
-#     symbol: str
-#     price: str
-#     quantity: str

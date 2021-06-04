@@ -10,7 +10,7 @@ import graphene
 from graphql_lib.post_queries import Query
 from graphql_lib.post_mutations import Mutation
 from html_lib.load_html import load_html
-from ws_lib.servant import WSServant
+from ws_lib.ws_server import WSServer
 import logging
 from settings import settings
 
@@ -45,7 +45,7 @@ async def ws_app() -> HTMLResponse:
 # WebSocket
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    ws = WSServant(websocket)
+    ws = WSServer(websocket)
     await ws.controller()
 
 
