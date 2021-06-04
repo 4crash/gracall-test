@@ -22,13 +22,13 @@ class Settings(BaseSettings):
     database_url: str = 'sqlite:///./demo.sqlite'
     
     # postgress
-    # database_url: str = 'postgresql://postgres:password@localhost:5432/demo-app'
+    # database_url: str = 'postgresql://postgres:pass@localhost:5432/demo-app'
     
     # logging level
     debug_level: int = logging.WARNING
     
     # saved data into db or into List
-    storage_type: str = StorageType.DB
+    storage_type: str = StorageType.MEMORY
 
 
 settings = Settings()

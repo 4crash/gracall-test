@@ -33,7 +33,6 @@ class WSServant:
         
         while True:
             data = await queue.get()
-            
             if data.get("error"):
                 await self.websocket.send_json(data)
                 
