@@ -12,7 +12,6 @@
 
 ## Notes
 - Please bear in mind that Frontend is not intended for code demonstration. :)
-- There is no Docker file. Iam struggling with bluescreen on my computer when  Docker Terminal is launched. (Hope it will be fixed soon)
 
 ## TODO
 - [ ] Change folders structure
@@ -21,6 +20,7 @@
 - [x] Merge SQlalchemy and pydantic dataModels declaration
 - [x] Create solid structure for queuing system , errors, data 
 - [ ] Use some kind of vocabulary  for text gathering, language mutations 
+- [x] Add docker file
 
 ## Environment
 - python 3.9.x
