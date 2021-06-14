@@ -19,7 +19,7 @@
 - [x] Add live list of added posts to websocket page
 - [x] Merge SQlalchemy and pydantic dataModels declaration
 - [x] Create solid structure for queuing system , errors, data 
-- [ ] Use some kind of vocabulary  for text gathering, language mutations 
+- [ ] Use vocabulary for text gathering and language mutations 
 - [x] Add docker file
 
 ## Environment
@@ -27,6 +27,9 @@
 - sys path for python command 
 - pip
 - git CLI
+
+## Build from Docker
+ - Use included docker file and build docker image
 
 ## Install steps for Win OS
 - Create folder and open it
