@@ -1,7 +1,10 @@
 # vscode
 .vscode/
+
+# Vue Frontend so far
+fe_vue/
 #Docker
-Dockerfile
+# Dockerfile
 # Byte-compiled / optimized / DLL files
 __pycache__/
 .mypy_cache/

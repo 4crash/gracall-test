@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from pydantic_lib.pydantic_post import PostBase, PostOut
 from posts.post_logic_router import PostLogic
 import pytz
+import pytest
 
 pl = PostLogic()
 post = PostBase(title="Test", author="edgar",
@@ -27,7 +28,7 @@ def test_create_delete_post():
     
     posts = pl.get_all_posts()
     after = len(posts)
-    
+
     assert int(before) == int(after), "posts were not deleted or not inserted"
 
 def test_get_all_posts():
@@ -54,15 +55,22 @@ def test_posts_paging():
     posts = pl.get_posts(skip=skip, limit=limit)
     assert len(posts) == int(itr_num -skip), "skip doesnt work"
 
-def test_get_detail():
+
+@pytest.mark.parametrize(
+    "example_input,expectation",
+    [
+        ("new title", "new title"),
+    ],
+)
+def test_get_detail(example_input, expectation):
     
     pl.create(post.copy())
-    post.title = "new title"
+    post.title=example_input
     new_post = pl.create(post.copy())
     
     selected_new_post= pl.get_post(new_post.id)
    
-    assert selected_new_post.title == post.title, "posts were not the same"
+    assert selected_new_post.title == expectation, "posts were not the same"
 
 
 def test_update():

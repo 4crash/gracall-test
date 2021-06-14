@@ -13,9 +13,9 @@ databases==0.4.3
 fastapi==0.65.1
 flake8==3.9.2
 gevent==21.1.2
-graphene==3.0b7
-graphene-pydantic==0.2.0
-graphene-sqlalchemy==2.3.0
+graphene
+graphene-pydantic
+graphene-sqlalchemy
 graphql-core==3.1.5
 graphql-relay==3.1.0
 greenlet==1.1.0
@@ -34,7 +34,7 @@ psycopg2==2.8.6
 py==1.10.0
 pycodestyle==2.7.0
 pycparser==2.20
-pydantic==1.8.2
+pydantic
 pydantic-sqlalchemy==0.0.9
 pyflakes==2.3.1
 pylint==2.8.3

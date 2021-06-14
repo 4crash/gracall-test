@@ -29,7 +29,7 @@
 - git CLI
 
 ## Build from Docker
- - Use included docker file and build docker image
+ - Use included docker file and build image.
 
 ## Install steps for Win OS
 - Create folder and open it

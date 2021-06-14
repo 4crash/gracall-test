@@ -18,8 +18,8 @@ from ws_lib.message_types import (ClientCommand,
 
 
 class WSServer:
-    """Start ws server and receiving requests from the client.
-        Start binance data listening and sending it to the client.
+    """ Start ws server and receiving requests from the client.
+        Start binance data listening and sending them to the client.
     """
     def __init__(self, websocket:WebSocket):
         self.websocket = websocket
