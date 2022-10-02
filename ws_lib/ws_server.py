@@ -155,7 +155,7 @@ class WSServer:
         # iterating over time period and check last n posts in database 
         tasks.append(asyncio.create_task(self.receive_and_send_posts()))
         # gather asincio tasks and run
-        asyncio.run(await asyncio.gather(*tasks, loop=self.loop))
+        asyncio.run(await asyncio.gather(*tasks))
 
         
 
